@@ -1,0 +1,14 @@
+Add an item
+Endpoint: POST /items
+
+Get All items
+Endpoint: GET /items
+
+Get a Single item by ID
+Endpoint: GET /items/:id
+Update an item (name, quantity, purchased status, etc…)
+
+Endpoint: PUT /items/:id
+Delete an item
+
+Endpoint: DELETE /items/:id
