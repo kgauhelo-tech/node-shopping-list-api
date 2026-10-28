@@ -30,8 +30,8 @@ export const itemsRoute = async (req: IncomingMessage, res: ServerResponse) => {
     if (req.method === "GET" && id) {
       try {
         const item = getItemById(id);
-        res.writeHead(item ? 200 : 404, { "content-type": "application/json" });
-        res.end(JSON.stringify(item || { message: "Not Found" }));
+        res.writeHead(200, { "content-type": "application/json" });
+        res.end(JSON.stringify(item));
       } catch (error) {
         res.writeHead(404, { "content-type": "application/json" });
         res.end(JSON.stringify({ error: "Item not found" }));
@@ -40,44 +40,75 @@ export const itemsRoute = async (req: IncomingMessage, res: ServerResponse) => {
     }
 
     if (req.method === "POST") {
-      try {
-        let body = "";
-        req.on("data", (chunk) => {
-          // adds chunks to the body gradually build the body
-          body += chunk.toString();
-        });
-        req.on("end", () => {
+      let body = "";
+
+      req.on("data", (chunk) => {
+        body += chunk.toString();
+      });
+
+      req.on("end", () => {
+        try {
           const { name, status, quantity } = JSON.parse(body);
+
+          if (!name || typeof name !== typeof "") {
+            res.writeHead(400, { "content-type": "application/json" });
+            res.end(JSON.stringify({ error: "Ensure that name is valid" }));
+            return;
+          }
+          if (typeof status !== typeof true) {
+            res.writeHead(400, { "content-type": "application/json" });
+            res.end(JSON.stringify({ error: "Ensure that status is valid" }));
+            return;
+          }
+          if (!quantity || typeof quantity !== typeof "") {
+            res.writeHead(400, { "content-type": "application/json" });
+            res.end(JSON.stringify({ error: "Ensure that quantity is valid" }));
+            return;
+          }
+
           const newItem = addItem(name, status, quantity);
           res.writeHead(201, { "content-type": "application/json" });
           res.end(JSON.stringify(newItem));
-        });
-      } catch (error) {
-        res.writeHead(200, { "content-type": "application/json" });
-        res.end(JSON.stringify({ error: "Unable to save item" }));
-      }
+        } catch (error) {
+          // This now successfully catches JSON syntax errors or service errors!
+          res.writeHead(400, { "content-type": "application/json" });
+          res.end(JSON.stringify({ error: "Unable to save item" }));
+        }
+      });
 
       return;
     }
 
-    // circle back to these two
     if (req.method === "PUT") {
-      try {
-      } catch (error) {
-        res.writeHead(404, { "content-type": "application/json" });
-        res.end(JSON.stringify({ error: "Item not found" }));
-      }
+      let body = "";
+      req.on("data", (chunk) => {
+        // adds chunks to the body gradually build the body
+        body += chunk.toString();
+      });
+      req.on("end", () => {
+        try {
+          const { id, name, status, quantity } = JSON.parse(body);
+          const item = updateItem(id, name, status, quantity);
+          res.writeHead(204);
+          res.end();
+        } catch (error) {
+          res.writeHead(404, { "content-type": "application/json" });
+          res.end(JSON.stringify({ error: "Item not found" }));
+        }
+      });
+      return;
     }
 
     if (req.method === "DELETE") {
       try {
         const item = deleteItem(id);
-        res.writeHead(item ? 204 : 404, { "content-type": "application/json" });
-        res.end(JSON.stringify(item || { message: "item Deleted" }));
+        res.writeHead(204);
+        res.end();
       } catch (error) {
         res.writeHead(404, { "content-type": "application/json" });
         res.end(JSON.stringify({ error: "Unable to delete item" }));
       }
+      return;
     }
   }
 
