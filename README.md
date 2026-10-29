@@ -63,12 +63,13 @@ Deletes an item from the list by its unique ID. Replace `:id` with the actual it
 
 1. Clone the repository:
    ```bash
-   https://github.com/kgauhelo-tech/node-shopping-list-api.git
+   git init
+   git clone https://github.com/kgauhelo-tech/node-shopping-list-api.git
    ```
 2. Navigate to the project directory:
    ```bash
-   cd shopping-list-api-nodejs
-   git checkout implementation
+   cd node-shopping-list-api
+   git switch implementation
    ```
 3. Install the necessary dependencies (if any):
    ```bash
