@@ -2,7 +2,7 @@ import item from "../models/item";
 
 let items: item[] = [];
 
-let currentId = 1;
+let currentId = 0;
 
 export const getItems = (): item[] => {
   return items;
@@ -11,7 +11,7 @@ export const getItems = (): item[] => {
 export const getItemById = (id: string): item | undefined => {
   const item = items.find((item) => item.id === id);
 
-  if (!items) throw new Error("Item not found");
+  if (!item) throw new Error("Item not found");
 
   return item;
 };
@@ -22,11 +22,11 @@ export const addItem = (
   quantity: string,
 ): item => {
   if (!name || !name.trim()) throw new Error("Name is required");
-  if (!status) throw new Error("Status is required");
+  if (typeof status !== "boolean") throw new Error("Status must be a boolean");
   if (!quantity || !quantity.trim()) throw new Error("Quantity is required");
 
   const newItem: item = {
-    id: `${currentId++}`,
+    id: `${(currentId = currentId + 1)}`,
     name,
     status,
     quantity,
@@ -43,10 +43,11 @@ export const updateItem = (
 ): item => {
   const index = items.findIndex((item) => item.id === id);
 
-  if (!index) throw new Error(`Item with ${id} not found`);
+  if (index === -1) throw new Error(`Item with ${id} not found`);
 
   if (!newName || !newName.trim()) throw new Error("Name is required");
-  if (!newStatus) throw new Error("Status is required");
+  if (typeof newStatus !== "boolean")
+    throw new Error("Status must be a boolean");
   if (!newQuantity || !newQuantity.trim())
     throw new Error("Quantity is required");
   const updatedItem: item = {

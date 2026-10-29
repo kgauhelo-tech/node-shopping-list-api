@@ -8,8 +8,6 @@ import {
   updateItem,
 } from "../controllers/items";
 
-// endpoint http://localhost:3000/items
-
 export const itemsRoute = async (req: IncomingMessage, res: ServerResponse) => {
   if (req.url?.startsWith("/items")) {
     const parts = req.url.split("/");

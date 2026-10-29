@@ -4,12 +4,11 @@ import { itemsRoute } from "./routes/items";
 const PORT = 4000;
 
 const requestListener = (req: IncomingMessage, res: ServerResponse) => {
-  console.log(req?.url, "URL");
   if (req.url?.startsWith("/items")) {
     itemsRoute(req, res);
   } else {
     res.writeHead(200, { "content-type": "application/json" });
-    res.end(JSON.stringify({ message: "Hello World " }));
+    res.end(JSON.stringify({ message: "Endpoint is non-existent" }));
   }
 };
 
