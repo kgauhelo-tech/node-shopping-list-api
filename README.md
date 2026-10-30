@@ -1,68 +1,108 @@
-Topic: NodeTS <br />
-Submission Date: 30 October 2026 <br />
-Time: 09:00 AM
+# Shopping List API
 
+## Overview
 
-Please submit by pushing to your GitHub repository and creating a pull request to your mentor
+This project is a simple Node.js application that serves as both a basic File Manager and a REST API for managing a shopping list.
+It uses Node.js' built-in HTTP module and file system capabilities to store shopping list data in JSON format and exposes CRUD
+(Create, Read, Update, Delete) operations via HTTP endpoints. Each item in the shopping list has a unique identifier (ID) for
+easy reference.
 
-# Title: Task 6 - Shopping List API
+## Features
 
-## Project Overview
-You are tasked to build a shopping list REST API that lets users manage the items they want to buy. The app allows users to add, view, update, and delete items from the shopping list.
+- **Create a shopping list item** by sending POST requests.
+- **Read the details of a shopping list item** with GET requests.
+- **Read the entire shopping list** with GET requests.
+- **Update existing items** with PUT requests using item IDs.
+- **Delete items** from the list using DELETE requests based on item IDs.
+- Data is stored in an array in the `item.ts` file that is in `controller` directory that is within the `src` directory.
 
-## Use-case Scenario
+## Endpoints
 
- - Suppose you need to make a note of groceries before going to the store.
- - You make a shopping list consisting of items such as "Milk, Eggs, Bread.".
- - As you shop, you can check off items that you've purchased.
- - You can modify amounts (e.g., 2L of milk rather than 1).
- - You can remove items you do not need anymore.
+### 1. `GET /items`
 
-The application should run as a NodeJS HTTP server with Typescript. Users must be able to interact with the application using API requests, e.g Postman.
+Fetches the entire shopping list from the `items.ts` file.
 
-## Core Features
- - Add an item
-   - Endpoint: POST /items
- - Get All items
-   - Endpoint: GET /items
- - Get a Single item by ID
-   - Endpoint: GET /items/:id
- - Update an item (name, quantity, purchased status, etc…)
-   - Endpoint: PUT /items/:id
- - Delete an item
-   - Endpoint: DELETE /items/:id
+### 2. `GET /items/:id`
 
-## Task Breakdown
+Fetches the details of the shopping list item from the `items.ts` file by its unique ID. Replace `:id` with the actual item ID.
 
-### Sprint 1: Project Setup
-   - Setup Node.js + TypeScript project (tsconfig.json, package.json)
-   - Create a basic HTTP server (server.ts)
+### 3. `POST /items`
 
-### Sprint 2: Shopping List Items CRUD
-   - Create Item type in models/item.ts.
-   - Store items in memory (array of objects).
-   - Implement GET /items → return all items.
-   - Implement POST /items → create a new item.
-   - Return validation errors if fields are missing.
+Adds a new item to the shopping list. The item should be in the following format:
 
-### Sprint 3: Item Details & Updates
-   - Implement GET /items/:id → return item by ID.
-   - Implement PUT /items/:id → update name, quantity, or purchased status.
-   - Return 404 if item not found.
-   - Add validation.
+```json
+{
+  "name": "Milk",
+  "status": false,
+  "quantity": "2 Litres"
+}
+```
 
-### Sprint 4: Delete Items
-   - Implement DELETE /items/:id.
-   - Return 204 No Content if deleted, 404 if not found.
+### 4. `PUT /items`
 
-### Sprint 5: Error Handling & Response Consistency
-   - Create a reusable error handler (400 for bad input, 404 for not found).
-   - Ensure all responses are JSON with a consistent shape.
+Updates an existing item's quantity using the item ID. The item update should be in the following format:
 
-### Sprint 6: Testing & Documentation
-   - Test endpoints with Postman.
-   - Document API endpoints in a README.md.
+```json
+{
+    "id": "unique_id"
+    "name": "Milk",
+    "status": true,
+    "quantity": "2 Litres"
+}
+```
 
-### Deliverables
-   1. Readme file
-   2. Project
+### 5. `DELETE /items/:id`
+
+Deletes an item from the list by its unique ID. Replace `:id` with the actual item ID.
+
+## Requirements
+
+- Node.js installed on your machine.
+
+## Setup and Installation
+
+1. Clone the repository:
+   ```bash
+   git init
+   git clone https://github.com/kgauhelo-tech/node-shopping-list-api.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd node-shopping-list-api
+   git switch implementation
+   ```
+3. Install the necessary dependencies (if any):
+   ```bash
+   npm install
+   ```
+
+## Running the Server
+
+Start the server on port 4000 by running:
+
+```bash
+npm run dev
+```
+
+The server will be available at `http://localhost:4000`.
+
+## Testing
+
+Use Postman or a similar tool to test the API endpoints on a local device.
+
+### Example for POST request:
+
+- URL: `http://localhost:4000/items`
+- Method: `POST`
+- Body (raw JSON):
+  ```json
+  {
+    "name": "Milk",
+    "status": false,
+    "quantity": "2 Litres"
+  }
+  ```
+
+## License
+
+This project is licensed under the MIT License.
