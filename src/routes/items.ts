@@ -12,9 +12,9 @@ export const itemsRoute = async (req: IncomingMessage, res: ServerResponse) => {
   if (req.url?.startsWith("/items")) {
     const parts = req.url.split("/");
 
-    const id = parts[2];
+    const extractedID = parts[2];
 
-    if (req.method === "GET" && !id) {
+    if (req.method === "GET" && !extractedID) {
       try {
         res.writeHead(200, { "content-type": "application/json" });
         res.end(JSON.stringify(getItems()));
@@ -25,9 +25,9 @@ export const itemsRoute = async (req: IncomingMessage, res: ServerResponse) => {
       return;
     }
 
-    if (req.method === "GET" && id) {
+    if (req.method === "GET" && extractedID) {
       try {
-        const item = getItemById(id);
+        const item = getItemById(extractedID);
         res.writeHead(200, { "content-type": "application/json" });
         res.end(JSON.stringify(item));
       } catch (error) {
@@ -80,15 +80,16 @@ export const itemsRoute = async (req: IncomingMessage, res: ServerResponse) => {
     if (req.method === "PUT") {
       let body = "";
       req.on("data", (chunk) => {
-        // adds chunks to the body gradually build the body
         body += chunk.toString();
       });
       req.on("end", () => {
         try {
-          const { id, name, status, quantity } = JSON.parse(body);
-          const item = updateItem(id, name, status, quantity);
-          res.writeHead(204);
-          res.end();
+          const { name, status, quantity } = JSON.parse(body);
+          const item = updateItem(extractedID, name, status, quantity);
+          res.writeHead(200);
+          res.end(
+            JSON.stringify({ successMessage: `Item ${item.name} updated ` }),
+          );
         } catch (error) {
           res.writeHead(404, { "content-type": "application/json" });
           res.end(JSON.stringify({ error: "Item not found" }));
@@ -99,9 +100,11 @@ export const itemsRoute = async (req: IncomingMessage, res: ServerResponse) => {
 
     if (req.method === "DELETE") {
       try {
-        const item = deleteItem(id);
-        res.writeHead(204);
-        res.end();
+        const item = deleteItem(extractedID);
+        res.writeHead(200);
+        res.end(
+          JSON.stringify({ successMessage: `Item ${item.name} deleted` }),
+        );
       } catch (error) {
         res.writeHead(404, { "content-type": "application/json" });
         res.end(JSON.stringify({ error: "Unable to delete item" }));
